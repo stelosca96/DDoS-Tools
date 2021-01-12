@@ -37,7 +37,7 @@ Creo dei veri server DNS in rete locale usando dei container docker e li contatt
 ### Dipendenze
 
 ```
-sudo apt-get install libpcap-dev libssl-dev cmake
+sudo apt-get install libpcap-dev libssl-dev cmake nlohmann-json3-dev
 git clone https://github.com/mfontanini/libtins.git
 cd libtins
 mkdir build
