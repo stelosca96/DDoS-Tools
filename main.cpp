@@ -21,6 +21,7 @@ int main(int argc, char* argv[]) {
         }
         std::ifstream json_file("settings.json");
         nlohmann::json json_data = nlohmann::json::parse(json_file);
+        std::cout << "Settings: " << json_data.dump(4) << std::endl;
 
         std::string target_ip(argv[2]);
         if(strcmp(argv[1], "-d")==0){
@@ -31,33 +32,9 @@ int main(int argc, char* argv[]) {
             SynFlood synFlood(target_ip, target_port, json_data["upload_size"], json_data["threads_number"]);
             synFlood.run();
         }
-//        std::cout << "Settings: " << json_data.dump(4) << std::endl;
     }
     catch (const nlohmann::json::parse_error& e) {
         std::cout << "An error has occurred while reading the settings.json file!" << std::endl;
         exit(-2);
     }
-
-
 }
-//int main(int argc, char* argv[]) {
-//    IPv4Address dst("192.168.1.24");
-//    uint16_t dst_port = 80;
-//    unsigned counter = 1000000;
-//    unsigned threads_number = 4;
-//    std::vector<std::thread> threads;
-//    threads.reserve(threads_number);
-//
-//    auto start = std::chrono::steady_clock::now();
-//    for(int i=0; i<threads_number; i++){
-//        threads.emplace_back(syn_flood, dst, dst_port, counter);
-//    }
-//    for(std::thread &t: threads){
-//        t.join();
-//    }
-//    auto end = std::chrono::steady_clock::now();
-//    std::chrono::duration<double> elapsed_seconds = end-start;
-//    std::cout << "elapsed time: " << elapsed_seconds.count() << std::endl;
-//    std::cout << "pps: " << threads_number * counter/elapsed_seconds.count() << "p/s" << std::endl;
-//
-//}

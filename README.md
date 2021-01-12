@@ -6,7 +6,6 @@ Vedendo le tipologie di attacchi ddod più diffuse il mio obiettivo è di simula
 
 - Botnet che effettua un attacco diretto 
     - syn flood
-	- http requests (da valutare)
 - Reflection (attacchi che mirano al livello di rete)
     - DNS
 
@@ -14,7 +13,6 @@ Gli attacchi possono anche essere classificati come:
 
 - attacchi che mirano al livello applicativo
     - syn flood
-    - http requests (da valutare)
 - attacchi che mirano al livello di rete
     - DNS reflection
 
@@ -46,6 +44,16 @@ cmake ../ -DLIBTINS_ENABLE_CXX11=1
 make
 sudo make install
 sudo ldconfig
+```
+
+### Esecuzione
+
+```
+cd build
+cmake DDoS-Tools ..
+make
+cp ../settings.json .
+sudo DDoS_Tools -{mode} {TARGET_IP} {opt TARGET_PORT}
 ```
 
 ### DNS Server

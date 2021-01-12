@@ -23,8 +23,6 @@ IPv4Address SynFlood::random_ip_address(){
     return buff.str();
 }
 
-
-
 void SynFlood::syn_flood(IPv4Address dst_ip, uint16_t dst_port, unsigned counter) {
     NetworkInterface interface = NetworkInterface::default_interface();
     NetworkInterface::Info info = interface.addresses();
