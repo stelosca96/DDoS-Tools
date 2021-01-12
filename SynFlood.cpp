@@ -53,7 +53,7 @@ void SynFlood::syn_flood(IPv4Address dst_ip, uint16_t dst_port, unsigned counter
 
 void SynFlood::run(){
     NetworkInterface interface = NetworkInterface::default_interface();
-    std::cout << "Used interface: " << interface.name() << std::endl;
+    std::cout << "Interface: " << interface.name() << std::endl;
     std::cout << "Threads: " << threads_number << std::endl;
 
     std::vector<std::thread> threads;
@@ -68,7 +68,7 @@ void SynFlood::run(){
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
     std::cout << "elapsed time: " << elapsed_seconds.count() << std::endl;
-    std::cout << "pps: " << threads_number * counter/elapsed_seconds.count() << "p/s" << std::endl;
+    std::cout << "pps: " << counter/elapsed_seconds.count() << " pps" << std::endl;
 }
 
 // 60 => size of syn packet
