@@ -29,7 +29,8 @@ int main(int argc, char* argv[]) {
                     target_ip,
                     dns_servers,
                     json_data["upload_size"],
-                    json_data["threads_number"]);
+                    json_data["threads_number"],
+                    json_data["upload_bandwidth"]);
             dnsAmplification.run();
         } else {
             uint16_t target_port = argc<3 ? 80: std::stoi(argv[3]);
