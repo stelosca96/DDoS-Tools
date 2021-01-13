@@ -3,6 +3,7 @@ version: '2'
 services:
   core_dns:
     image: coredns/coredns:latest
+    restart: unless-stopped
     command: -conf /root/Corefile
     ports:
     - "53:53/udp"
