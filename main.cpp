@@ -35,7 +35,12 @@ int main(int argc, char* argv[]) {
         } else {
             uint16_t target_port = argc<3 ? 80: std::stoi(argv[3]);
             std::cout << "SynFlood attack to " << target_ip << " on port " << target_port << std::endl;
-            SynFlood synFlood(target_ip, target_port, json_data["upload_size"], json_data["threads_number"]);
+            SynFlood synFlood(
+                    target_ip,
+                    target_port,
+                    json_data["upload_size"],
+                    json_data["threads_number"],
+                    json_data["upload_bandwidth"]);
             synFlood.run();
         }
     }
